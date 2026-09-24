@@ -1,60 +1,63 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://drone-roi-api.onrender.com";
 
-export const searchLocation = async (address) => {
-  const response = await fetch(`${API_URL}/api/location?q=${encodeURIComponent(address)}`);
+const request = async (url, options = {}) => {
+  const response = await fetch(`${API_BASE_URL}${url}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Unable to find the location.");
+
+  if (!response.ok) {
+    throw new Error(
+      data?.error ||
+      data?.message ||
+      `Request failed with status ${response.status}`
+    );
+  }
+
   return data;
 };
 
+export const searchLocation = async (address) => {
+  return await request(`/api/location?q=${encodeURIComponent(address)}`);
+};
+
 export const calculateResponseTime = async (payload) => {
-  const response = await fetch(`${API_URL}/api/response-time`, {
+  const data = await request(`/api/response-time`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Calculation failed.");
   return data.result;
 };
 
 export const calculateCallSimulation = async (payload) => {
-  const response = await fetch(`${API_URL}/api/call-simulation`, {
+  const data = await request(`/api/call-simulation`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Simulation failed.");
   return data.result;
 };
 
 export const fetchAssumptions = async () => {
-  const response = await fetch(`${API_URL}/api/roi/assumptions`);
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Failed to load assumptions.");
-  return data;
+  return await request(`/api/roi/assumptions`);
 };
 
 export const calculateROI = async (payload) => {
-  const response = await fetch(`${API_URL}/api/roi/calculate`, {
+  const data = await request(`/api/roi/calculate`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "ROI calculation failed.");
   return data.result;
 };
 
 export const sendEmailReport = async (payload) => {
-  const response = await fetch(`${API_URL}/api/report/email`, {
+  return await request(`/api/report/email`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Failed to send email.");
-  return data;
 };
 
