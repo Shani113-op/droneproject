@@ -15,6 +15,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://droneproject.vercel.app",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -25,7 +26,14 @@ app.use(
         return callback(null, true);
       }
 
-      if (allowedOrigins.includes(origin)) {
+      // Remove trailing slash for comparison
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      
+      const isAllowed = allowedOrigins.some(allowed => 
+        allowed && allowed.replace(/\/$/, "") === normalizedOrigin
+      );
+
+      if (isAllowed) {
         return callback(null, true);
       }
 
