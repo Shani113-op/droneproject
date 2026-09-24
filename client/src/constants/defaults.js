@@ -1,0 +1,9 @@
+export const LOCATION = [19.076, 72.8777];
+export const DEFAULT_RADIUS = 5;
+export const DEFAULT_DRONE_SPEED_KMH = 50;
+export const DEFAULT_LAUNCH_DELAY_MIN = 1;
+export const DEFAULT_PATROL_RESPONSE_MIN = 8.6;
+export const DEFAULT_ANNUAL_CALLS = "10000";
+export const DEFAULT_COVERAGE_CALL_SHARE_PCT = "40";
+export const DEFAULT_ELIGIBLE_CALL_SHARE_PCT = "30";
+export const DEFAULT_DRONE_AVAILABILITY_PCT = "80";
